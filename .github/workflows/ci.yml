@@ -1,0 +1,52 @@
+name: E2E Pipeline
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v3
+
+      - name: Clone backend
+        uses: actions/checkout@v3
+        with:
+          repository: GunjanBidpath/demo-inventory-backend
+          path: inventorytrack-backend
+
+      - name: Clone frontend
+        uses: actions/checkout@v3
+        with:
+          repository: GunjanBidpath/demo-inventory-frontend
+          path: inventorytrack-frontend
+
+      - name: Clone Playwright tests
+        uses: actions/checkout@v3
+        with:
+          repository: GunjanBidpath/demo-inventory-testing
+          path: inventorytrack-testing
+
+      - name: Build and start backend
+        run: docker compose -f inventorytrack-backend/docker-compose.yml up -d --build
+
+      - name: Build and start frontend
+        run: docker compose -f inventorytrack-frontend/docker-compose.yml up -d --build
+
+      - name: Wait for services to be ready
+        run: sleep 10
+
+      - name: Install Playwright dependencies
+        working-directory: inventorytrack-testing
+        run: |
+          npm ci
+          npx playwright install
+
+      - name: Run Playwright tests
+        working-directory: inventorytrack-testing
+        env:
+          BASE_URL: http://localhost:3000
+        run: npm test
