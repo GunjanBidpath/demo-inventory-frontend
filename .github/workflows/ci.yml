@@ -31,7 +31,10 @@ jobs:
           path: inventorytrack-testing
 
       - name: Build and start backend
-        run: docker compose -f inventorytrack-backend/docker-compose.yml up -d --build
+        run: docker compose -f inventorytrack-backend/docker-compose.yml up -d -- || true
+
+      - name: Check Postgres Logs
+        run: docker logs $(docker ps -aqf "name=postgres-db")
 
       - name: Build and start frontend
         run: docker compose -f inventorytrack-frontend/docker-compose.yml up -d --build

@@ -156,12 +156,12 @@ export default function ProductsPage() {
         {products.map((product) => (
           <li
             key={product.id}
-            className="border rounded p-4 shadow-sm flex justify-between items-center"
+            className="border rounded p-4 shadow-sm flex justify-between items-center" data-testid="product-card"
           >
             <div>
-              <div className="font-semibold">{product.name}</div>
-              <div className="text-sm text-gray-600">SKU: {product.sku}</div>
-              <div className="text-sm text-gray-600">
+              <div className="font-semibold" data-testid="product-name">{product.name}</div>
+              <div className="text-sm text-gray-600" data-testid="product-sku">SKU: {product.sku}</div>
+              <div className="text-sm text-gray-600" data-testid="product-stock">
                 Price: ₹{product.price} | Stock: {product.stockQty}
               </div>
             </div>
